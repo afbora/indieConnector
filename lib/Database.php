@@ -33,8 +33,9 @@ class IndieConnectorDatabase
     {
         try {
             $values = $this->convertValuesToSaveDbString($values);
+
             $query =
-                'INSERT INTO ' . $table . '(' . implode(',', $fields) . ') VALUES("' . implode('","', $values) . '")';
+                'INSERT INTO ' . $table . '(' . implode(',', $fields) . ') VALUES(\'' . implode('\',\'', $values) . '\')';
 
             $this->db->query($query);
 
@@ -49,7 +50,7 @@ class IndieConnectorDatabase
         try {
             $values = $this->convertValuesToSaveDbString($values);
             $query =
-                'INSERT INTO ' . $table . '(' . implode(',', $fields) . ') VALUES("' . implode('","', $values) . '")'
+                'INSERT INTO ' . $table . '(' . implode(',', $fields) . ') VALUES(\'' . implode('\',\'', $values) . '\')'
                 . ' ON CONFLICT(' . $uniqueField . ') DO UPDATE SET ' . $set;
 
             $this->db->query($query);
@@ -69,13 +70,15 @@ class IndieConnectorDatabase
                 ',',
                 array_map(
                     function ($field, $value) {
-                        return $field . '="' . $value . '"';
+                        return $field . '=\'' . $value . '\'';
                     },
                     $fields,
                     $values
                 )
             );
             $query .= ' ' . $filters;
+
+
             $this->db->query($query);
 
             return true;
